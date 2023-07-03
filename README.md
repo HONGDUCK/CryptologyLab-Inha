@@ -1,6 +1,13 @@
 # CryptologyLab-Inha
  Hello Cryptology.
 
+## Functions
+---
+
+* Encryption
+* Decryption
+* Calculation
+
 ## What We Learn.
 ---
 * LWE
