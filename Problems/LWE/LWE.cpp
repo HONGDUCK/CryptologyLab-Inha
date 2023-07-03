@@ -26,6 +26,13 @@ void SecretKeyGenerator(int Setkey[]){
     }
 }
 
+void MessageGenerator(int n, int m[]) {
+    /*메세지를 생성하는 함수, 메세지의 길이인 n과 m배열을 인자로 받으며 m에 임의의 메세지를 생성하여 리턴*/
+    for (int i = 0;i < n;i++) {
+        m[i] = rand() % 2;
+    }
+}
+
 void hello(){
     cout << "hello Cryptology!\n";
 }
