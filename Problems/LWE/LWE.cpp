@@ -9,6 +9,7 @@ using namespace std;
 /*<----------------- function Prototype ------------------>*/
 void SecretKeyGenerator();
 void MessageGenerator();
+void ParamGenerator();
 void hello();
 
 int main(){
@@ -24,6 +25,18 @@ void SecretKeyGenerator(int Setkey[]){
 
     for(int i=0; i<n; i++){
         Setkey[i] = rand() % Mod_Q;
+    }
+}
+
+void ParamGenerator(int* a, int m, int n){
+    /* 공개되는 파라미터인 Matrix A를 생성하는 함수 */
+    /* 배열을 포인터로서 받으며, 해당 포인터를 통해 파라미터값을 갱신 후 리턴 */
+    /* m : 보내고자 하는 메세지 수, n : Security Value */
+
+    for(int i=0; i<m; i++){
+        for(int j=0; j<n; j++){
+            *(a + (i*m) + j) = rand() % Mod_Q; 
+        }
     }
 }
 
