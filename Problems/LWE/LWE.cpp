@@ -17,6 +17,7 @@ int main(){
 
 /*<------------- function Definition -------------->*/
 void SecretKeyGenerator(int Setkey[]){
+    /* 시크릿 키를 생성하는 함수, SetKey배열을 인자로 받으며 SetKey에 임의의 시크릿 키를 생성하여 리턴*/
     /* n : 시크릿 키 담을 배열의 크기 */
     int n = sizeof(Setkey);
 
