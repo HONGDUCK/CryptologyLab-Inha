@@ -8,6 +8,7 @@ using namespace std;
 
 /*<----------------- function Prototype ------------------>*/
 void SecretKeyGenerator();
+void MessageGenerator();
 void hello();
 
 int main(){
