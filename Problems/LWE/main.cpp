@@ -5,13 +5,13 @@ int main() {
 
     int message[num];
     int secretkey[num];
-    int a[num];
+    int a[num][num];
     int EncMessage[num];
 
     MessageGenerator(num, message);
-    ParamGenerator(a, num, num);
+    ParamGenerator(*a, num, num);
     SecretKeyGenerator(secretkey);
-    Encryption(message, secretkey, a, EncMessage);
+    Encryption(message, 10, secretkey, *a, EncMessage);
 
     for (int i = 0; i < num; i++)
     {
@@ -24,16 +24,19 @@ int main() {
     }
     std::cout << "\n";
     
-    // for (int i = 0; i < num; i++)
-    // {
-    //     std::cout << "A " << a[i] << "\n";
-    // }
-    // std::cout << "\n";
+    std::cout << "Matrix A\n";
+    for (int i = 0; i < num; i++){
+        for(int j = 0; j<num; j++){
+            std::cout << a[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n";
 
-    // for (int i = 0; i < num; i++)
-    // {
-    //     std::cout << "EncrypedMessage " << EncMessage[i] << "\n";
-    // }
+    for (int i = 0; i < num; i++)
+    {
+        std::cout << "EncrypedMessage " << EncMessage[i] << "\n";
+    }
     
     return 0;
 }
