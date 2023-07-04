@@ -56,6 +56,31 @@ void ParamGenerator(int* a, int m, int n) {
     }
 }
 
+void Decryption(int EncMessage[], int Message[], int MessageSize, int SecKey[], int* ParamMatrix, int DecMessage[])
+{
+
+    for (int i = 0; i < MessageSize; i++) {
+        int tempNum;
+        int DecVal;
+        /*  <a,s> 계산*/
+        for (int j = 0; j < num; j++) {
+            tempNum = SecKey[j] * *(ParamMatrix + (i * MessageSize) + j);
+        }
+        tempNum = tempNum % Mod_Q;
+
+        DecVal = EncMessage[i] - tempNum;
+        if (DecVal >= -Mod_Q / 2 - 1 && DecVal <= -Mod_Q / 2 + 1)
+        {
+            DecVal += Mod_Q;
+        }
+        if (DecVal >= Mod_Q / 4)
+            DecMessage[i] = 1;
+        else
+            DecMessage[i] = 0;
+
+    }
+}
+
 void MessageGenerator(int n, int m[]) {
     /*메세지를 생성하는 함수, 메세지의 길이인 n과 m배열을 인자로 받으며 m에 임의의 메세지를 생성하여 리턴*/
     for (int i = 0; i < n; i++) {
