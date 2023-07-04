@@ -5,7 +5,7 @@ using namespace std;
 
 /*<---------------- Parameter ----------------->*/
 #define Mod_Q 112 // 임의로 정함 추후 변경필요
-
+// TESTTEST
 /*<----------------- function Prototype ------------------>*/
 void Encryption(int Message[], int SecKey[], int* ParamMatrix, int EncMessage[]);
 void SecretKeyGenerator(int Setkey[]);
