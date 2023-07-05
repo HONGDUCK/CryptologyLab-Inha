@@ -31,7 +31,7 @@ void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, 
 
             EncMessage[i] = tempNum;
 
-        }
+        }   
     }
 }
 
@@ -56,19 +56,20 @@ void ParamGenerator(int* a, int m, int n) {
     }
 }
 
-void Decryption(int EncMessage[], int Message[], int MessageSize, int SecKey[], int* ParamMatrix, int DecMessage[])
+void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatrix, int DecMessage[])
 {
 
     for (int i = 0; i < MessageSize; i++) {
-        int tempNum;
-        int DecVal;
+        int tempNum = 0;
+        int DecVal = 0;
         /*  <a,s> 계산*/
         for (int j = 0; j < num; j++) {
-            tempNum = SecKey[j] * *(ParamMatrix + (i * MessageSize) + j);
+            tempNum += SecKey[j] * *(ParamMatrix + (i * MessageSize) + j);
         }
+        
         tempNum = tempNum % Mod_Q;
-
         DecVal = EncMessage[i] - tempNum;
+
         if (DecVal >= -Mod_Q / 2 - 1 && DecVal <= -Mod_Q / 2 + 1)
         {
             DecVal += Mod_Q;
@@ -77,7 +78,6 @@ void Decryption(int EncMessage[], int Message[], int MessageSize, int SecKey[], 
             DecMessage[i] = 1;
         else
             DecMessage[i] = 0;
-
     }
 }
 

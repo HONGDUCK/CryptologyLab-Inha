@@ -7,17 +7,20 @@ int main() {
     int secretkey[num];
     int a[num][num];
     int EncMessage[num];
+    int DecMessage[num];
 
     MessageGenerator(num, message);
     ParamGenerator(*a, num, num);
     SecretKeyGenerator(secretkey);
     Encryption(message, 10, secretkey, *a, EncMessage);
+    Decryption(EncMessage, 10, secretkey, *a, DecMessage);
 
     for (int i = 0; i < num; i++)
     {
         std::cout << "Message: " << message[i] << "\n";
     }
     std::cout << "\n";
+    
     for (int i = 0; i < num; i++)
     {
         std::cout << "Secretkey: " << secretkey[i] << "\n";
@@ -37,6 +40,12 @@ int main() {
     {
         std::cout << "EncrypedMessage " << EncMessage[i] << "\n";
     }
+    std::cout << "\n";
+
+    for(int i=0; i<num; i++){
+        std::cout << "DecMessage " << DecMessage[i] << "\n";
+    }
+    std::cout << "\n";
     
     return 0;
 }
