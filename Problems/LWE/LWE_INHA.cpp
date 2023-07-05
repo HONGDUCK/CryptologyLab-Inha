@@ -1,6 +1,7 @@
 /*<------------- Library -------------->*/
 #include <iostream>
 #include <ctime>
+#include <cstdlib>
 #include "LWE_INHA.h"
 using namespace std;
 
@@ -8,6 +9,7 @@ using namespace std;
 void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, int EncMessage[]) {
     /* 암호화 함수 메세지, 시크릿 키, Matrix A를 인자로 받으며 암호화된 정보인 EncMessage를 생성 */
     int tempError[3] = { -1,0,1 }; /* 임의의 Err값 */
+    srand(time(NULL));
 
     for (int i = 0; i < MessageSize; i++) {
         int tempNum = Message[i]; /* DotProduct의 값 */
@@ -38,6 +40,7 @@ void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, 
 void SecretKeyGenerator(int Setkey[]) {
     /* 시크릿 키를 생성하는 함수, SetKey배열을 인자로 받으며 SetKey에 임의의 시크릿 키를 생성하여 리턴*/
     /* n : 시크릿 키 담을 배열의 크기 */
+    srand(time(NULL));
 
     for (int i = 0; i < num; i++) {
         Setkey[i] = rand() % Mod_Q;
@@ -48,6 +51,7 @@ void ParamGenerator(int* a, int m, int n) {
     /* 공개되는 파라미터인 Matrix A를 생성하는 함수 */
     /* 배열을 포인터로서 받으며, 해당 포인터를 통해 파라미터값을 갱신 후 리턴 */
     /* m : 보내고자 하는 메세지 수, n : Security Value */
+    srand(time(NULL));
 
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < n; j++) {
@@ -83,6 +87,8 @@ void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatri
 
 void MessageGenerator(int n, int m[]) {
     /*메세지를 생성하는 함수, 메세지의 길이인 n과 m배열을 인자로 받으며 m에 임의의 메세지를 생성하여 리턴*/
+    srand(time(NULL));
+    
     for (int i = 0; i < n; i++) {
         m[i] = rand() % 2;
     }
