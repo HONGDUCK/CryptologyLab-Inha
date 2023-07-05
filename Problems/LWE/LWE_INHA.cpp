@@ -74,10 +74,17 @@ void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatri
         tempNum = tempNum % Mod_Q;
         DecVal = EncMessage[i] - tempNum;
 
-        if (DecVal >= -Mod_Q / 2 - 1 && DecVal <= -Mod_Q / 2 + 1)
+        if(DecVal < 0){
+            DecVal *= -1;
+        }
+
+        /* 수정 필요.. 절댓값 대체
+        if (DecVal >= -Mod_Q / 2 - 1 && DecVal <= -Mod_Q / 2 + 2)
         {
             DecVal += Mod_Q;
         }
+        */
+
         if (DecVal >= Mod_Q / 4)
             DecMessage[i] = 1;
         else
