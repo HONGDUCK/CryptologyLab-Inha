@@ -9,6 +9,7 @@ void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, 
 void SecretKeyGenerator(int Setkey[]);
 void MessageGenerator(int n, int m[]);
 void ParamGenerator(int* a, int m, int n);
+void Operator(int m0[], int m1[], int MessageSize, int result[]);
 
 
 #endif

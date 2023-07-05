@@ -101,6 +101,12 @@ void MessageGenerator(int n, int m[]) {
     }
 }
 
+void Operator(int m0[], int m1[], int MessageSize, int result[]) {
+    for (int i = 0; i < MessageSize; i++) {
+        result[i] = m0[i] ^ m1[i];
+    }
+}
+
 void hello() {
     cout << "hello Cryptology!\n";
 }
