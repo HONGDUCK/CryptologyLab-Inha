@@ -117,7 +117,7 @@ void Operator(int m0[], int m1[], int MessageSize, int result[]) {
     }
 }
 
-void AddEncMessage(int EncMessage1[], int EncMessage2[], int MessageSize, int result[]) {
+void AddEncMessage(int EncMessage1[], int EncMessage2[], int MessageSize, int result[], int* param_a, int* param_b, int* newParam) {
     /*
         int carry = 0;
 
@@ -133,6 +133,12 @@ void AddEncMessage(int EncMessage1[], int EncMessage2[], int MessageSize, int re
 
     for(int i=0; i<MessageSize; i++){
         result[i] = (EncMessage1[i] + EncMessage2[i]) % Mod_Q;
+    }
+
+    for(int i=0; i<MessageSize; i++){
+        for(int j=0; j<num; j++){
+            *(newParam + (MessageSize * i) + j) = (*(param_a + (MessageSize * i) + j) + *(param_b + (MessageSize * i) + j)) % Mod_Q;
+        }
     }
 }
 

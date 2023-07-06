@@ -120,7 +120,6 @@ void AddEncMTest(){
         기대값과 다름. 추후 수정 필요.
     */
 
-
     int m1[num] = {0,0,0,0,0,1,1,1,1,1};
     int m2[num] = {1,1,1,1,1,0,0,0,0,0};
 
@@ -136,10 +135,11 @@ void AddEncMTest(){
     Encryption(m2, num, SK, *paramA, EncM2);
 
     int Result[num];
-    AddEncMessage(EncM1, EncM2, num, Result);
+    int newParam[num][num];
+    AddEncMessage(EncM1, EncM2, num, Result, *paramA, *paramA, *newParam);
 
     int DecRes[num];
-    Decryption(Result, num, SK, *paramA, DecRes);
+    Decryption(Result, num, SK, *newParam, DecRes);
 
     cout << "EncMessage Add Test\nMessage1 : ";
     for(int i=0; i<num; i++){
