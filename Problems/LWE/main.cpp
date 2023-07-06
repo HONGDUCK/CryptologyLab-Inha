@@ -7,15 +7,16 @@ void ParamGenTest();
 void SKGenTest();
 void EncTest();
 void DecTest();
-
+void AddEncMTest();
 
 int main() {
 
-    MesGenTest();
-    ParamGenTest();
-    SKGenTest();
-    EncTest();
-    DecTest();
+    // MesGenTest();
+    // ParamGenTest();
+    // SKGenTest();
+    // EncTest();
+    // DecTest();
+    AddEncMTest();
 
     return 0;
 }
@@ -112,4 +113,47 @@ void DecTest(){
     }
     cout << "\n\n";
 
+}
+
+void AddEncMTest(){
+    /*
+        기대값과 다름. 추후 수정 필요.
+    */
+
+
+    int m1[num] = {0,0,0,0,0,1,1,1,1,1};
+    int m2[num] = {1,1,1,1,1,0,0,0,0,0};
+
+    int SK[num];
+    SecretKeyGenerator(SK);
+
+    int paramA[num][num];
+    ParamGenerator(*paramA, num, num);
+
+    int EncM1[num];
+    int EncM2[num];
+    Encryption(m1, num, SK, *paramA, EncM1);
+    Encryption(m2, num, SK, *paramA, EncM2);
+
+    int Result[num];
+    AddEncMessage(EncM1, EncM2, num, Result);
+
+    int DecRes[num];
+    Decryption(Result, num, SK, *paramA, DecRes);
+
+    cout << "EncMessage Add Test\nMessage1 : ";
+    for(int i=0; i<num; i++){
+        cout << m1[i] << " ";
+    }
+    cout << "\nMessage2 : ";
+    for(int i=0; i<num; i++){
+        cout << m2[i] << " ";
+    }
+    cout << "\n";
+
+    cout << "Decryption Message : ";
+    for(int i=0; i<num; i++){
+        cout << DecRes[i] << " ";
+    }
+    cout << "\n\n";
 }

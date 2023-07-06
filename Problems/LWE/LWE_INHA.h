@@ -10,6 +10,7 @@ void SecretKeyGenerator(int Setkey[]);
 void MessageGenerator(int n, int m[]);
 void ParamGenerator(int* a, int m, int n);
 void Operator(int m0[], int m1[], int MessageSize, int result[]);
+void AddEncMessage(int EncMessage1[], int EncMessage2[], int MessageSize, int result[]);
 
 
 #endif

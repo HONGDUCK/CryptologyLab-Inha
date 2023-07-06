@@ -74,6 +74,8 @@ void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatri
         tempNum = tempNum % Mod_Q;
         DecVal = EncMessage[i] - tempNum;
 
+        cout << "DecVal : " << DecVal << "\n";
+
         if(DecVal < 0){
             DecVal *= -1;
         }
@@ -113,7 +115,26 @@ void Operator(int m0[], int m1[], int MessageSize, int result[]) {
     if (carry > 0) {
         result[MessageSize] = carry;
     }
+}
 
+void AddEncMessage(int EncMessage1[], int EncMessage2[], int MessageSize, int result[]) {
+    /*
+        int carry = 0;
+
+        for (int i = 0; i < MessageSize; i++) {
+            int sum = EncMessage1[i] + EncMessage2[i] + carry;
+            result[i] = sum % Mod_Q;
+            carry = sum / Mod_Q;
+        }
+        if (carry > 0) {
+            result[MessageSize] = carry;
+        }
+    */
+
+    for(int i=0; i<MessageSize; i++){
+        result[i] = (EncMessage1[i] + EncMessage2[i]) % Mod_Q;
+    }
+}
 
 void hello() {
     cout << "hello Cryptology!\n";
