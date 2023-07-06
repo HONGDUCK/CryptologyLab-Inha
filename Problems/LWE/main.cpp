@@ -1,80 +1,115 @@
 #include <iostream>
 #include "LWE_INHA.h"
+using namespace std;
+
+void MesGenTest();
+void ParamGenTest();
+void SKGenTest();
+void EncTest();
+void DecTest();
+
 
 int main() {
-    int m0[num];
-    int m1[num];
-    int secretkey[num];
-    int a[num][num];
-    int EncMessage[num];
-    int DecMessage[num];
-    int XORresult[num];
 
-    MessageGenerator(num, m0);
-    MessageGenerator(num, m1);
-    ParamGenerator(*a, num, num);
-    SecretKeyGenerator(secretkey);
+    MesGenTest();
+    ParamGenTest();
+    SKGenTest();
+    EncTest();
+    DecTest();
 
-    Encryption(m0, 10, secretkey, *a, EncMessage);
-    Decryption(EncMessage, 10, secretkey, *a, DecMessage);
-
-    for (int i = 0; i < num; i++)
-    {
-        std::cout << "Message(m0): " << message[i] << "\n";
-    }
-    std::cout << "\n";
-    
-    for (int i = 0; i < num; i++)
-    {
-        std::cout << "Secretkey: " << secretkey[i] << "\n";
-    }
-    std::cout << "\n";
-    
-    std::cout << "Matrix A\n";
-    for (int i = 0; i < num; i++){
-        for(int j = 0; j<num; j++){
-            std::cout << a[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
-    std::cout << "\n";
-
-    for (int i = 0; i < num; i++)
-    {
-        std::cout << "EncrypedMessage " << EncMessage[i] << "\n";
-    }
-    std::cout << "\n";
-
-    for(int i=0; i<num; i++){
-        std::cout << "DecrypedMessage " << DecMessage[i] << "\n";
-    }
-    std::cout << "\n";
-
-    //m1
-    Encryption(m1, 10, secretkey, *a, EncMessage);
-    Decryption(EncMessage, 10, secretkey, *a, DecMessage);
-    Operator(m0, m1, 10, XORresult);
-    for (int i = 0; i < num; i++)
-    {
-        std::cout << "Message(m1): " << m1[i] << "\n";
-    }
-    std::cout << "\n";
-    for (int i = 0; i < num; i++)
-    {
-        std::cout << "EncrypedMessage " << EncMessage[i] << "\n";
-    }
-    std::cout << "\n";
-    for (int i = 0; i < num; i++)
-    {
-        std::cout << "DecrypedMessage " << DecMessage[i] << "\n";
-    }
-    std::cout << "\n";
-
-    std::cout << "XOR Result: ";
-    for (int i = 0; i < num; i++) {
-        std::cout << XORresult[i] << " ";
-    }
-    std::cout << "\n";
-    
     return 0;
+}
+
+void MesGenTest(){
+    int m[num] = {0};
+    MessageGenerator(num, m);
+
+    cout << "MessageGenerator Test\nMessage : ";
+    for(int i=0; i<num; i++){
+        cout << m[i] << " ";
+    }
+    cout << "\n\n";
+}
+
+void ParamGenTest(){
+    int paramA[num][num];
+    ParamGenerator(*paramA, num, num);
+
+    cout << "ParamGenerator Test\nParam Matrix : \n";
+    for(int i=0; i<num; i++){
+        for(int j=0; j<num; j++){
+            cout << paramA[i][j] << " ";
+        }
+        cout << "\n";
+    }
+    cout << "\n";
+}
+
+void SKGenTest(){
+    int SK[num];
+    SecretKeyGenerator(SK);
+
+    cout << "SecretKeyGenerator Test\nSeckretKey : ";
+    for(int i=0; i<num; i++){
+        cout << SK[i] << " ";
+    }
+    cout << "\n\n";
+}
+
+void EncTest(){
+
+    int SK[num];
+    SecretKeyGenerator(SK);
+
+    int paramA[num][num];
+    ParamGenerator(*paramA, num, num);
+
+    int m[num] = {0};
+    MessageGenerator(num, m);
+
+    int EncM[num];
+    Encryption(m, num, SK, *paramA, EncM);
+
+    cout << "EncryptionTest\nMessage : ";
+    for(int i=0; i<num; i++){
+        cout << m[i] << " ";
+    }
+    cout << "\n";
+
+    cout << "Encryption Message : ";
+    for(int i=0; i<num; i++){
+        cout << EncM[i] << " ";
+    }
+    cout << "\n\n";
+}
+
+void DecTest(){
+
+    int SK[num];
+    SecretKeyGenerator(SK);
+
+    int paramA[num][num];
+    ParamGenerator(*paramA, num, num);
+
+    int m[num] = {0};
+    MessageGenerator(num, m);
+
+    int EncM[num];
+    Encryption(m, num, SK, *paramA, EncM);
+
+    int DecM[num];
+    Decryption(EncM, num, SK, *paramA, DecM);
+
+    cout << "DecryptionTest\nMessage : ";
+    for(int i=0; i<num; i++){
+        cout << m[i] << " ";
+    }
+    cout << "\n";
+
+    cout << "Decryption Message : ";
+    for(int i=0; i<num; i++){
+        cout << DecM[i] << " ";
+    }
+    cout << "\n\n";
+
 }
