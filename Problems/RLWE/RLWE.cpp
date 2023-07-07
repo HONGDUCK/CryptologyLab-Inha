@@ -27,7 +27,6 @@ int main(){
 
     /* TEST 3*/
     int message[4] = {1, 0, 1, 0};
-    int* paramU = new int[Demension_N];
     int* SK = SecretKeyGen();
     int* PK_v[4];
     int* PK_u[4];
@@ -113,6 +112,9 @@ void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]){
 
     int *paramA = ParamGen();
     int *paramB = polyOperation(paramA, Demension_N, SK, Demension_N);
+    int *Err0 = ErrGen();
+    polyAdd(paramB, Demension_N, Err0, Demension_N);
+    polyMod(paramB, Demension_N);
 
     /* <----------------- Generate New PK u, v ---------------------> */
 
