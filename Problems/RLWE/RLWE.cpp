@@ -39,17 +39,19 @@ int main(){
     for(int i=0; i<MessageSize; i++){
         cout << message[i] << " ";
     }
-    cout << "\n";
+    cout << "\n\n";
 
     for(int i=0; i<MessageSize; i++){
         cout << "PK_u[" << i << "] = ";
         printPoly(PK_u[i], Demension_N);
     }
+    cout << "\n";
 
     for(int i=0; i<MessageSize; i++){
         cout << "PK_v[" << i << "] = ";
         printPoly(PK_v[i], Demension_N);
     }
+    cout << "\n";
 
     int DecMes[MessageSize];
     Decryption(PK_u, PK_v, SK, DecMes, MessageSize);
@@ -58,6 +60,7 @@ int main(){
     for(int i=0; i<MessageSize; i++){
         cout << DecMes[i] << " ";
     }
+    cout << "\n";
 
     return 0;
 }
@@ -166,7 +169,7 @@ void Decryption(int* PK_u[], int* PK_v[], int SK[], int DecMes[], int m_size){
         
         tempNum = poly_us[0];
 
-        cout << "tempNum : " << tempNum << "\n";
+        // cout << "tempNum : " << tempNum << "\n";
 
         if(tempNum <= Q/4 || tempNum >= 75){
             DecMes[i] = 0;
