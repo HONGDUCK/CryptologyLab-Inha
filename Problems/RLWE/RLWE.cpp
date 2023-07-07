@@ -13,7 +13,7 @@ void printPoly(int poly[], int size);
 void polyAdd(int a[], int a_size, int b[], int b_size);
 void polySub(int a[], int a_size, int b[], int b_size);
 
-void MesGen(int m[], int m_size);
+int* MesGen(int m_size);
 int* ParamGen();
 int* SecretKeyGen();
 int* EphKeyGen();
@@ -22,32 +22,40 @@ void Decryption(int* PK_u[], int* PK_v[], int SK[], int DecMes[], int m_size);
 void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]);
 
 int main(){
+    int MessageSize = 8;
 
     srand(time(NULL));
 
     /* TEST 3*/
-    int message[4] = {1, 0, 1, 0};
+    int* message = MesGen(MessageSize);
     int* SK = SecretKeyGen();
-    int* PK_v[4];
-    int* PK_u[4];
+    int* PK_v[MessageSize];
+    int* PK_u[MessageSize];
 
-    Encryption(message, 4, SK, PK_u, PK_v);
 
-    for(int i=0; i<4; i++){
+    Encryption(message, MessageSize, SK, PK_u, PK_v);
+
+    cout << "Message : ";
+    for(int i=0; i<MessageSize; i++){
+        cout << message[i] << " ";
+    }
+    cout << "\n";
+
+    for(int i=0; i<MessageSize; i++){
         cout << "PK_u[" << i << "] = ";
         printPoly(PK_u[i], Demension_N);
     }
 
-    for(int i=0; i<4; i++){
+    for(int i=0; i<MessageSize; i++){
         cout << "PK_v[" << i << "] = ";
         printPoly(PK_v[i], Demension_N);
     }
 
-    int DecMes[4];
-    Decryption(PK_u, PK_v, SK, DecMes, 4);
+    int DecMes[MessageSize];
+    Decryption(PK_u, PK_v, SK, DecMes, MessageSize);
 
     cout << "DecMes : ";
-    for(int i=0; i<4; i++){
+    for(int i=0; i<MessageSize; i++){
         cout << DecMes[i] << " ";
     }
 
@@ -55,10 +63,13 @@ int main(){
 }
 
 
-void MesGen(int m[], int m_size){
+int* MesGen(int m_size){
+    int* m = new int[m_size];
     for(int i=0; i<m_size; i++){
         m[i] = rand() % 2;
     }
+
+    return m;
 }
 
 int* ParamGen(){
