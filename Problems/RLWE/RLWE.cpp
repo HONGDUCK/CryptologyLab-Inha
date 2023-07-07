@@ -5,57 +5,46 @@
 #define Demension_N  4
 using namespace std;
 
+int* polyOperation(int polyA[], int a_size, int polyB[], int b_size);
 int* polyMulti(int a[], int a_size, int b[], int b_size);
 void polyMod(int a[], int a_size);
 int* polyDiv(int a[], int a_size, int b[], int b_size);
 void printPoly(int poly[], int size);
+void polyAdd(int a[], int a_size, int b[], int b_size);
+
 void MesGen(int m[], int m_size);
 int* ParamGen();
 int* SecretKeyGen();
-void Encryption(int message[], int m_size, int paramA[], int SK[], int* EncMes[]);
+void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]);
+int* EphKeyGen();
+
 
 int main(){
 
     // srand(time(NULL));
 
-    /* TEST 1 */
-    // int tempPoly1[4] = {3, 4, 2, 4};
-    // int tempPoly2[4] = {8, 4, 2, 5};
-
-    // int* poly = polyMulti(tempPoly1, 4, tempPoly2, 4);
-
-    // cout << sizeof(poly) << " " <<  sizeof(poly)/sizeof(int) << "\n";
-
-    // printPoly(poly, 7);
-    
-    /* TEST 2 */
-    // int tempPoly1[4] = {4,3,2,4};
-    // int tempPoly2[3] = {1,0,1};
-
-    // polyDiv(tempPoly1, 4, tempPoly2, 3);
-
-
     /* TEST 3*/
     int message[4] = {1, 0, 1, 0};
-    int* paramA = ParamGen();
+    int* paramU = new int[Demension_N];
     int* SK = SecretKeyGen();
-    int* Enc[4];
-    
-    // cout << "Param = ";
-    // printPoly(paramA, Demension_N);
-    // cout << "SK = ";
-    // printPoly(SK, Demension_N);
+    int* PK_v[4];
+    int* PK_u[4];
 
-    Encryption(message, 4, paramA, SK, Enc);
+    Encryption(message, 4, SK, PK_u, PK_v);
 
-    // for(int i=0; i<4; i++){
-    //     cout << "Enc[" << i << "] = ";
-    //     printPoly(Enc[i], Demension_N);
-    // }
+    for(int i=0; i<4; i++){
+        cout << "PK_u[" << i << "] = ";
+        printPoly(PK_u[i], Demension_N);
+    }
 
+    for(int i=0; i<4; i++){
+        cout << "PK_v[" << i << "] = ";
+        printPoly(PK_v[i], Demension_N);
+    }
 
     return 0;
 }
+
 
 void MesGen(int m[], int m_size){
     for(int i=0; i<m_size; i++){
@@ -73,57 +62,103 @@ int* ParamGen(){
 }
 
 int* SecretKeyGen(){
+    int small_Val[3] = {Q-1, 0, 1};
     int* SK = new int[Demension_N];
+
     for(int i=0; i<Demension_N; i++){
-        SK[i] = rand() % Q;
+        SK[i] = small_Val[rand() % 3];
     }
 
     return SK;
 }
 
-void Encryption(int message[], int m_size, int paramA[], int SK[], int* EncMes[]){
-    int Err[3] = {-1, 0, 1};
+int* EphKeyGen(){
+    int small_Val[3] = {Q-1, 0, 1};
+    int* ep = new int[Demension_N];
+
+    for(int i=0; i<Demension_N; i++){
+        ep[i] = small_Val[rand() % 3];
+    }
+
+    return ep;
+}
+
+int* ErrGen(){
+    int small_Val[3] = {Q-1, 0, 1};
+    int* err = new int[Demension_N];
+
+    for(int i=0; i<Demension_N; i++){
+        err[i] = small_Val[rand() % 3];
+    }
+
+    return err;
+}
+
+/*-----------------------------*/
+
+void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]){
+    int small_Val[3] = {Q-1, 0, 1};
     
-    int* tempPoly = polyMulti(paramA, Demension_N, SK, Demension_N);
-    int tempPolyLen = Demension_N * 2 - 1;
+    /* <------------- Generate PK a, b ----------------> */
+
+    int *paramA = ParamGen();
+    int *paramB = polyOperation(paramA, Demension_N, SK, Demension_N);
+
+    /* <----------------- Generate New PK u, v ---------------------> */
+
+    for(int i=0; i<m_size; i++){
+        int* EphKey = EphKeyGen(); /* 임시 키 생성 Small Value */
+        int* Err1 = ErrGen(); /* Error 생성 Small Value */
+        int* Err2 = ErrGen();
+
+        int* temp_u = new int[Demension_N];
+        int* temp_v = new int[Demension_N];
+
+        temp_u = polyOperation(paramA, Demension_N, EphKey, Demension_N);
+        polyAdd(temp_u, Demension_N, Err1, Demension_N);
+        polyMod(temp_u, Demension_N);
+
+        temp_v = polyOperation(paramB, Demension_N, EphKey, Demension_N);
+        polyAdd(temp_v, Demension_N, Err2, Demension_N);
+
+        if(message[i] == 1){
+            temp_v[0] += Q/2;
+            polyMod(temp_v, Demension_N);
+        }else{
+            polyMod(temp_v, Demension_N);
+        }
+
+        PK_u[i] = temp_u;
+        PK_v[i] = temp_v;
+    }
+}
+
+    }
+
+}
+
+/*-----------------------------*/
+
+int* polyOperation(int polyA[], int a_size, int polyB[], int b_size){
+    int* tempPoly = polyMulti(polyA, a_size, polyB, b_size);
+    int tempPolyLen = a_size + b_size - 1;
 
     // cout << "Multi Reuslt = ";
     // printPoly(tempPoly, tempPolyLen);
 
-    int dividePoly[Demension_N+1] = {0};
+    int dividePoly[Demension_N + 1] = {0};
     dividePoly[0] = 1;
     dividePoly[Demension_N] = 1;
 
     // cout << "Div Reuslt = ";
     // printPoly(dividePoly, Demension_N+1);
 
+    int* paramB = polyDiv(tempPoly, tempPolyLen, dividePoly, Demension_N+1);
+    int paramB_Len = Demension_N;
 
-
-    for(int i=0; i<m_size; i++){
-        
-        int* remainPoly = polyDiv(tempPoly, tempPolyLen, dividePoly, Demension_N+1);
-        int remainPolyLen = Demension_N;
-
-        // cout << "Remain Reuslt = ";
-        // printPoly(remainPoly, remainPolyLen);
-
-        /* ADD ERROR */
-        for(int i=0; i<remainPolyLen; i++){
-            int err = Err[rand() % 3];
-            remainPoly[i] += err;
-        }
-
-        if(message[i] == 1){
-            remainPoly[0] += Q/2;
-        }
-
-        polyMod(remainPoly, remainPolyLen);
-
-        EncMes[i] = remainPoly;
-    }
+    return paramB;
 }
 
-/* 생각 필요 */
 void polyMod(int a[], int a_size){
     for(int i=0; i<a_size; i++){
         a[i] = a[i] % Q;
@@ -200,6 +235,7 @@ int* polyMulti(int a[], int a_size, int b[], int b_size){
 }
 
 void printPoly(int poly[], int size){
+    
     for (int i=0; i<size; i++){
 
        cout << poly[i];
@@ -213,4 +249,10 @@ void printPoly(int poly[], int size){
        }
     }
     cout << "\n";
+}
+
+void polyAdd(int a[], int a_size, int b[], int b_size){
+    for(int i=0; i<Demension_N; i++){
+        a[i] = a[i] + b[i];
+    }
 }
