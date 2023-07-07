@@ -11,17 +11,19 @@ void polyMod(int a[], int a_size);
 int* polyDiv(int a[], int a_size, int b[], int b_size);
 void printPoly(int poly[], int size);
 void polyAdd(int a[], int a_size, int b[], int b_size);
+void polySub(int a[], int a_size, int b[], int b_size);
 
 void MesGen(int m[], int m_size);
 int* ParamGen();
 int* SecretKeyGen();
-void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]);
 int* EphKeyGen();
 
+void Decryption(int* PK_u[], int* PK_v[], int SK[], int DecMes[], int m_size);
+void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]);
 
 int main(){
 
-    // srand(time(NULL));
+    srand(time(NULL));
 
     /* TEST 3*/
     int message[4] = {1, 0, 1, 0};
@@ -40,6 +42,14 @@ int main(){
     for(int i=0; i<4; i++){
         cout << "PK_v[" << i << "] = ";
         printPoly(PK_v[i], Demension_N);
+    }
+
+    int DecMes[4];
+    Decryption(PK_u, PK_v, SK, DecMes, 4);
+
+    cout << "DecMes : ";
+    for(int i=0; i<4; i++){
+        cout << DecMes[i] << " ";
     }
 
     return 0;
@@ -133,8 +143,24 @@ void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]){
     }
 }
 
-    }
+void Decryption(int* PK_u[], int* PK_v[], int SK[], int DecMes[], int m_size){
+    for(int i=0; i<m_size; i++){
+        int tempNum = 0;
 
+        int* poly_us = polyOperation(PK_u[i], Demension_N, SK, Demension_N);
+        polySub(poly_us, Demension_N, PK_v[i], Demension_N);
+        polyMod(poly_us, Demension_N);
+        
+        tempNum = poly_us[0];
+
+        cout << "tempNum : " << tempNum << "\n";
+
+        if(tempNum <= Q/4 || tempNum >= 75){
+            DecMes[i] = 0;
+        }else{
+            DecMes[i] = 1;
+        }
+    }
 }
 
 /*-----------------------------*/
@@ -254,5 +280,11 @@ void printPoly(int poly[], int size){
 void polyAdd(int a[], int a_size, int b[], int b_size){
     for(int i=0; i<Demension_N; i++){
         a[i] = a[i] + b[i];
+    }
+}
+
+void polySub(int a[], int a_size, int b[], int b_size){
+    for(int i=0; i<Demension_N; i++){
+        a[i] = b[i] - a[i];
     }
 }
