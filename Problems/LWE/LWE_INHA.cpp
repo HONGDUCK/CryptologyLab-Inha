@@ -18,7 +18,7 @@ void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, 
             for (int j = 0; j < num; j++) {
                 tempNum += SecKey[j] * *(ParamMatrix + (i * MessageSize) + j);
             }
-            tempNum += tempError[rand() % 3] + (Mod_Q / 2); /* 임의의 Error + [q/2] */
+            tempNum += tempError[rand() % 3] + (Mod_Q / 4); /* 임의의 Error + [q/2] */
             tempNum = tempNum % Mod_Q;
 
             EncMessage[i] = tempNum;
@@ -33,7 +33,7 @@ void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, 
 
             EncMessage[i] = tempNum;
 
-        }   
+        }
     }
 }
 
@@ -62,42 +62,48 @@ void ParamGenerator(int* a, int m, int n) {
 
 void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatrix, int DecMessage[])
 {
-
+    int DecVal;
+    int tempNum;
     for (int i = 0; i < MessageSize; i++) {
-        int tempNum = 0;
-        int DecVal = 0;
+        if (i > 0 && ((DecVal >= (3 * Mod_Q) / 8 && DecVal < (7 * Mod_Q) / 8)))
+        {
+            tempNum = 0;
+            DecVal = Mod_Q / 4;
+        }
+        else
+        {
+            tempNum = 0;
+            DecVal = 0;
+        }
         /*  <a,s> 계산*/
         for (int j = 0; j < num; j++) {
             tempNum += SecKey[j] * *(ParamMatrix + (i * MessageSize) + j);
         }
-        
         tempNum = tempNum % Mod_Q;
-        DecVal = EncMessage[i] - tempNum;
-
+        DecVal += EncMessage[i] - tempNum;
         cout << "DecVal : " << DecVal << "\n";
 
-        if(DecVal < 0){
+        if (DecVal < 0) {
             DecVal *= -1;
         }
-
-        /* 수정 필요.. 절댓값 대체
-        if (DecVal >= -Mod_Q / 2 - 1 && DecVal <= -Mod_Q / 2 + 2)
-        {
-            DecVal += Mod_Q;
-        }
-        */
-
-        if (DecVal >= Mod_Q / 4)
+        if (DecVal >= 0 && DecVal < Mod_Q / 8)
+            DecMessage[i] = 0;
+        else if (DecVal >= Mod_Q / 8 && DecVal < (3 * Mod_Q) / 8)
+            DecMessage[i] = 1;
+        else if (DecVal >= (3 * Mod_Q) / 8 && DecVal < (5 * Mod_Q) / 8)
+            DecMessage[i] = 0;
+        else if (DecVal >= (5 * Mod_Q) / 8 && DecVal < (7 * Mod_Q) / 8)
             DecMessage[i] = 1;
         else
             DecMessage[i] = 0;
     }
+
 }
 
 void MessageGenerator(int n, int m[]) {
     /*메세지를 생성하는 함수, 메세지의 길이인 n과 m배열을 인자로 받으며 m에 임의의 메세지를 생성하여 리턴*/
     srand(time(NULL));
-    
+
     for (int i = 0; i < n; i++) {
         m[i] = rand() % 2;
     }
@@ -131,12 +137,12 @@ void AddEncMessage(int EncMessage1[], int EncMessage2[], int MessageSize, int re
         }
     */
 
-    for(int i=0; i<MessageSize; i++){
+    for (int i = 0; i < MessageSize; i++) {
         result[i] = (EncMessage1[i] + EncMessage2[i]) % Mod_Q;
     }
 
-    for(int i=0; i<MessageSize; i++){
-        for(int j=0; j<num; j++){
+    for (int i = 0; i < MessageSize; i++) {
+        for (int j = 0; j < num; j++) {
             *(newParam + (MessageSize * i) + j) = (*(param_a + (MessageSize * i) + j) + *(param_b + (MessageSize * i) + j)) % Mod_Q;
         }
     }

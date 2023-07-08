@@ -1,7 +1,7 @@
 #ifndef LWE_INHA_H
 #define LWE_INHA_H
 
-#define Mod_Q 112
+#define Mod_Q 1253
 #define num 10
 
 void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatrix, int DecMessage[]);
