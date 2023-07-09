@@ -22,7 +22,7 @@ void Decryption(int* PK_u[], int* PK_v[], int SK[], int DecMes[], int m_size);
 void Encryption(int message[], int m_size, int SK[], int* PK_u[], int* PK_v[]);
 
 int main(){
-    int MessageSize = 8;
+    int MessageSize = 4;
 
     srand(time(NULL));
 

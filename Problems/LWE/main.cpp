@@ -120,8 +120,8 @@ void AddEncMTest(){
         기대값과 다름. 추후 수정 필요.
     */
 
-    int m1[num] = {0,0,0,0,0,1,1,1,1,1};
-    int m2[num] = {1,1,1,1,1,0,0,0,0,0};
+    int m1[num] = {1,0,0,0,0,1,1,1,1,1};
+    int m2[num] = {1,1,1,1,1,0,0,0,0,1};
 
     int SK[num];
     SecretKeyGenerator(SK);

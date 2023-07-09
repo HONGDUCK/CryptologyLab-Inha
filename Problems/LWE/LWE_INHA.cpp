@@ -8,7 +8,7 @@ using namespace std;
 /*<------------- function Definition -------------->*/
 void Encryption(int Message[], int MessageSize, int SecKey[], int* ParamMatrix, int EncMessage[]) {
     /* 암호화 함수 메세지, 시크릿 키, Matrix A를 인자로 받으며 암호화된 정보인 EncMessage를 생성 */
-    int tempError[3] = { -1,0,1 }; /* 임의의 Err값 */
+    int tempError[3] = { Mod_Q-1,0,1 }; /* 임의의 Err값 */
     srand(time(NULL));
 
     for (int i = 0; i < MessageSize; i++) {
@@ -80,12 +80,15 @@ void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatri
             tempNum += SecKey[j] * *(ParamMatrix + (i * MessageSize) + j);
         }
         tempNum = tempNum % Mod_Q;
+
         DecVal += EncMessage[i] - tempNum;
-        cout << "DecVal : " << DecVal << "\n";
 
         if (DecVal < 0) {
-            DecVal *= -1;
+            DecVal = Mod_Q + DecVal;
         }
+
+        cout << "DecVal : " << DecVal << "\n";
+
         if (DecVal >= 0 && DecVal < Mod_Q / 8)
             DecMessage[i] = 0;
         else if (DecVal >= Mod_Q / 8 && DecVal < (3 * Mod_Q) / 8)
@@ -97,7 +100,6 @@ void Decryption(int EncMessage[], int MessageSize, int SecKey[], int* ParamMatri
         else
             DecMessage[i] = 0;
     }
-
 }
 
 void MessageGenerator(int n, int m[]) {
