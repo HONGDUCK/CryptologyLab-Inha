@@ -1,9 +1,20 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <complex>
+#include <cmath>
+#include <vector>
+
 #define Q 112
+#define PI acos(-1)
 #define Demension_N  4
+
 using namespace std;
+
+typedef complex<double> cpdb;
+
+void FFT(vector<cpdb>& a, cpdb w);
+int* multi(int a[], int a_size, int b[], int b_size);
 
 int* polyOperation(int polyA[], int a_size, int polyB[], int b_size);
 int* polyMulti(int a[], int a_size, int b[], int b_size);
@@ -194,7 +205,7 @@ void Decryption(int* PK_u[], int* PK_v[], int SK[], int DecMes[], int m_size){
 /*-----------------------------*/
 
 int* polyOperation(int polyA[], int a_size, int polyB[], int b_size){
-    int* tempPoly = polyMulti(polyA, a_size, polyB, b_size);
+    int* tempPoly = multi(polyA, a_size, polyB, b_size);
     int tempPolyLen = a_size + b_size - 1;
 
     int dividePoly[Demension_N + 1] = {0};
@@ -300,4 +311,67 @@ void polySub(int a[], int a_size, int b[], int b_size){
     for(int i=0; i<Demension_N; i++){
         a[i] = b[i] - a[i];
     }
+}
+
+void FFT(vector<cpdb>& a, cpdb w){
+    int n = a.size();
+    if(n == 1) return;
+
+    vector<cpdb> even(n >> 1), odd(n >> 1);
+    for(int i=0; i<n; i++){
+        if(i & 1) odd[i >> 1] = a[i];
+        else even[i >> 1] = a[i];
+    }
+
+    /*divide*/
+    FFT(even, w*w), FFT(odd, w*w);
+
+    cpdb cw(1, 0);
+    for(int i=0; i<n/2; i++){
+        a[i] = even[i] + cw * odd[i];
+        a[i + n/2] = even[i] - cw * odd[i];
+
+        cw *= w;
+    }
+}
+
+int* multi(int a[], int a_size, int b[], int b_size){
+    int n = 1;
+    while (n < a_size || n < b_size){
+        n = n << 1;
+    }
+    n = n << 1;
+
+    vector<cpdb> _a(n), _b(n);
+    for(int i=a_size-1; i>=0; i--){
+        _a[i] = cpdb(a[i], 0);
+    }
+
+    for(int i=b_size-1; i>=0; i--){
+        _b[i] = cpdb(b[i], 0);
+    }
+
+    // FFT 변환을 위한 w
+    cpdb w( cos(2*PI/n), sin(2*PI/n) );
+    FFT(_a, w), FFT(_b, w);
+
+    vector<cpdb> c(n);
+    for(int i=0; i<n; i++){
+        c[i] = _a[i] * _b[i];
+    }
+
+    // FFT 역변환을 위한 rw
+    cpdb rw( cos(-2*PI/n), sin(-2*PI/n) );
+    FFT(c, rw);
+
+    for(int i=0; i<n; i++){
+        c[i] /= cpdb(n,0);
+    }
+
+    int* ans = new int[a_size + b_size - 1];
+    for(int i=0; i<c.size(); i++){
+        ans[i] = round(c[i].real());
+    }
+
+    return ans;
 }
